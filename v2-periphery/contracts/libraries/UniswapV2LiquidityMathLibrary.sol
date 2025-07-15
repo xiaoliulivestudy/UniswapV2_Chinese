@@ -1,3 +1,5 @@
+
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.5.0;
 
 import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol';
@@ -13,7 +15,7 @@ import './UniswapV2Library.sol';
 library UniswapV2LiquidityMathLibrary {
     using SafeMath for uint256;
 
-    //计算利润最大化交易的方向和幅度
+    //计算利润最大化交易的方向和幅度  正确的
     function computeProfitMaximizingTrade(
         uint256 truePriceTokenA,
         uint256 truePriceTokenB,
@@ -38,6 +40,34 @@ library UniswapV2LiquidityMathLibrary {
         //计算将价格移动到利润最大化价格必须发送的数量
         amountIn = leftSide.sub(rightSide);
     }
+
+
+    //计算利润最大化交易的方向和幅度  错误的
+    function computeProfitMaximizingTrade2(
+        uint256 truePriceTokenA,
+        uint256 truePriceTokenB,
+        uint256 reserveA,
+        uint256 reserveB
+    ) internal pure returns (bool aToB, uint256 amountIn) {
+        aToB = FullMath.mulDiv(reserveA, truePriceTokenB, reserveB) < truePriceTokenA;
+
+        uint256 invariant = reserveA.mul(reserveB);
+
+        uint256 leftSide = Babylonian.sqrt(
+            FullMath.mulDiv(
+                invariant.mul(1000000),
+                aToB ? truePriceTokenA : truePriceTokenB,
+                (aToB ? truePriceTokenB : truePriceTokenA).mul(997).mul(997)
+            )
+        );
+        uint256 rightSide = (aToB ? reserveA.mul(1000) : reserveB.mul(1000)) / 997;
+
+        if (leftSide < rightSide) return (false, 0);
+
+        //计算将价格移动到利润最大化价格必须发送的数量
+        amountIn = leftSide.sub(rightSide);
+    }
+
 
     //在套利将价格移动到给定外部观察到的真实价格的利润最大化比率后获取储备
     function getReservesAfterArbitrage(

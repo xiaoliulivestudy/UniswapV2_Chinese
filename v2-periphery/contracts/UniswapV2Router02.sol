@@ -79,7 +79,7 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
     }
 
     /**
-     * @dev: 根据两种token的地址向其交易对添加流动性
+     * @notice  根据两种token的地址向其交易对添加流动性
      * @param {address} tokenA:tokenA地址
      * @param {address} tokenB:tokenB地址
      * @param {uint} amountADesired:期望添加tokenA的数量
@@ -88,9 +88,9 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
      * @param {uint} amountBMin:愿意接受的最低tokenB数量
      * @param {address} to:接受lptoken的地址
      * @param {uint} deadline:交易允许最后执行时间
-     * @return {uint} amountA:实际添加到资金池中tokenA的数量
-     * @return {uint} amountB:实际添加到资金池中tokenB的数量
-     * @return {uint} liquidity:获得lptoken的数量
+     * @return  amountA:实际添加到资金池中tokenA的数量
+     * @return  amountB:实际添加到资金池中tokenB的数量
+     * @return  liquidity:获得lptoken的数量
      */
     function addLiquidity(
         address tokenA,
